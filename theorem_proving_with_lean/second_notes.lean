@@ -1,5 +1,5 @@
 -- -- * On propositions ----------------------------------------------------------
--- * Int
+-- * Int [#64]
 -- we can build a small logical system directly in lean
 namespace ml
 constant and : Prop → Prop → Prop
@@ -64,7 +64,7 @@ end ml
 -- the correct type.
 
 
--- ** What differs theorem from def?
+-- ** What differs theorem from def? [#85]
 -- It gives a hint to the compiler!
 
 
@@ -150,7 +150,7 @@ theorem t8 (h₁ : q → r) (h₂ : p → q) : p → r :=
 assume h₃ : p,
 show r, from h₁ (h₂ h₃)
 
--- * Having fun with connectives
+-- * Having fun with connectives [#15]
 #check p → q → p ∧ q
 #check ¬p → p ↔ false
 #check p ∨ q → q ∨ p
@@ -166,7 +166,7 @@ show r, from h₁ (h₂ h₃)
 --rule,” showing how to “eliminate” or use an implication in a proof.
 
 
--- ** Conjunction
+-- ** Conjunction [#10]
 
 -- The expression and.intro h1 h2 builds a proof of p ∧ q using
 -- proofs h1 : p and h2 : q. It is common to describe and.intro as the
@@ -177,7 +177,7 @@ show r, from h₁ (h₂ h₃)
 
 
 
--- *** example command
+-- *** example command [#12]
 
 
 -- The example command states a theorem without naming it or storing it in the
@@ -190,7 +190,7 @@ example (hp : p) (hq : q) : p ∧ q := and.intro hp hq
 
 
 
--- *** and.intro command
+-- *** and.intro command [#33]
 
 
 -- The expression and.intro h1 h2 builds a proof of p ∧ q using proofs h1 : p
@@ -224,7 +224,7 @@ example (hp : p) (hq : q) : p ∧ q := and.intro hp hq
 -- analogy, however, the proof we have just constructed is similar to a function
 -- that swaps the elements of a pair.
 
--- *** EXPLAINING THE WEIRD ⟨ ⟩ notation
+-- *** EXPLAINING THE WEIRD ⟨ ⟩ notation [#34]
 
 -- We will see in Chapter 9 that certain types in Lean are structures, which is
 -- to say, the type is defined with a single canonical constructor which builds
@@ -259,16 +259,17 @@ example (h : p ∧ q) : q ∧ p ∧ q:= ⟨h.right, ⟨h.left, h.right⟩⟩
 example (h : p ∧ q) : q ∧ p ∧ q:= ⟨h.right, h.left, h.right⟩
 
 
--- ** Disjunction
+-- ** Disjunction [#1]
 
--- * or-introduction rules -- The expression or.intro_left q hp
--- **creates a proof of p ∨ q from a proof hp : p. Similarly, or.intro_right p
--- **hq creates a proof for p ∨ q using a proof hq : q. These are the left and
--- **right or-introduction rules.
+-- * or-introduction rules
+
+-- The expression or.intro_left q hp creates a proof of p ∨ q from a proof hp :
+-- p. Similarly, or.intro_right p hq creates a proof for p ∨ q using a proof hq
+-- : q. These are the left and right or-introduction rules.
 example (hp : p) : p ∨ q := or.intro_left q hp
 example (hq : q) : p ∨ q := or.intro_right p hq
 
--- *** or-elimination rules
+-- *** or-elimination rules [#15]
 
 -- The or-elimination rule is slightly more complicated. The idea is that we can
 -- prove r from p ∨ q, by showing that r follows from p and that r follows from
@@ -284,7 +285,7 @@ or.elim h
     show q ∨ p, from or.intro_left p hq)
 
 
--- *** abbreviation of or.intro left q hp = or.inl q (gotta assume hp !)
+-- *** abbreviation of or.intro left q hp = or.inl q (gotta assume hp !) [#15]
 
 -- In most cases, the first argument of or.intro_right and or.intro_left can be
 -- inferred automatically by Lean. Lean therefore provides or.inr and or.inl as
@@ -300,14 +301,14 @@ example (h : p ∨ q) : q ∨ p :=
 h.elim
   (assume hp : p, or.inr hp)
   (assume hq : q, or.inl hq)
--- * Falsity
+-- * Falsity [#6]
 
 -- The connective false has a single elimination rule, false.elim, which
 -- expresses the fact that anything follows from a contradiction. This rule is
 -- sometimes called ex falso (short for ex falso sequitur quodlibet), or the
 -- principle of explosion.
 
--- ** elimination rule: false.elim
+-- ** elimination rule: false.elim [#15]
 
 
 
@@ -323,7 +324,7 @@ h.elim
 
 example (hp : p) (hnp : ¬p) : q := false.elim (hnp hp)
 
--- ** absurd
+-- ** absurd [#10]
 -- The arbitrary fact, q, that follows from falsity is an implicit argument in
 -- false.elim and is inferred automatically. This pattern, deriving an arbitrary
 -- fact from contradictory hypotheses, is quite common, and is represented by
@@ -334,16 +335,16 @@ example (hp : p) (hnp : ¬p) : q := absurd hp hnp
 example (hnp : ¬p) (hq : q) (hqp : q → p) : r := absurd (hqp hq) hnp
 
 
--- ** introduction rule: true.intro
+-- ** introduction rule: true.intro [#6]
 
 -- Incidentally, just as false has only an elimination rule, true has only an
 -- introduction rule, true.intro : true, sometimes abbreviated trivial : true.
 -- In other words, true is simply true, and has a canonical proof, trivial.
 
 
--- * Logical equivalence
+-- * Logical equivalence [#1]
 
--- ** iff.intro h₁ h₂, iff.elim_left, iff.elim_right
+-- ** iff.intro h₁ h₂, iff.elim_left, iff.elim_right [#15]
 
 -- The expression iff.intro h1 h2 produces a proof of p ↔ q from h1 : p → q and
 -- h2 : q → p. The expression iff.elim_left h produces a proof of p → q from h :
@@ -359,8 +360,10 @@ theorem and_swap : p ∧ q ↔ q ∧ p :=
   (assume h : q ∧ p,
     show p ∧ q, from and.intro (and.right h) (and.left h))
 
--- ** abreviating iff.elim_ : iff.mp and iff.mpr
-#check and_swap p q    -- p ∧ q ↔ q ∧ p Because they represent a form of modus
+-- ** abreviating iff.elim_ : iff.mp and iff.mpr [#22]
+#check and_swap p q
+
+-- p ∧ q ↔ q ∧ p Because they represent a form of modus
 -- ponens, iff.elim_left and iff.elim_right can be abbreviated iff.mp and
 -- iff.mpr, respectively. In the next example, we use that theorem to derive q ∧
 -- p from p ∧ q:
@@ -382,7 +385,7 @@ example (h : p ∧ q) : q ∧ p := (and_swap_again p q).mp h
 
 -- DIGEST THAT ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
--- * Auxiliary Subgoals: have and suffices
+-- * Auxiliary Subgoals: have and suffices [#9]
 
 -- NOW THIS IS FUN
 example (h : p ∧ q) : q ∧ p :=
@@ -392,7 +395,7 @@ have hq : q, from and.right h, --- DIGEST THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 show q ∧ p, from and.intro hq hp
 
 
--- * Classical Logic: the em constructor
+-- * Classical Logic: the em constructor [#62]
 -- We basically need the excluded middle for lots of normal math. Constructively,
 -- it is not in our toolset. For that we open the classical logic namespace
 
@@ -456,3 +459,4 @@ or.elim (em p)
 
 
 -- * EXERCISES
+-- in the supplemental file
