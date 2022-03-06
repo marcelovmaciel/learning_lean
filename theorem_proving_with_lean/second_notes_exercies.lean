@@ -141,3 +141,71 @@ example : (p → q) → (¬q → ¬p) :=
   assume hifp_then_q,
   assume hnot_q,
   assume hp,  absurd (hifp_then_q hp) hnot_q
+
+-- couldnt do this one
+ -- example : ¬(p ↔ ¬p) := assume h,
+
+
+
+open classical
+
+variables  s : Prop
+
+example : (p → r ∨ s) → ((p → r) ∨ (p → s)) :=
+  assume h, or.elim (em p)
+    (assume hp, (h hp).elim
+      (assume hr,
+        have hpr : p → r, from λ _:p, hr,
+        or.inl hpr)
+      (assume hs,
+        have hps : p → s, from λ _:p, hs,
+        or.inr hps ))
+    (assume hnotp,
+    suffices hp_then_r : p → r,
+    from or.inl hp_then_r, -- I still dont get this completely
+      assume hp:p, absurd hp hnotp)
+
+example : ¬(p ∧ q) → ¬p ∨ ¬q :=
+  assume h, or.elim (em p)
+  (assume hp,
+    or.elim (em q) -- that was tricky again
+      (assume hq, (h ⟨hp, hq⟩).elim)
+      (assume hnotq,or.inr hnotq))
+  (assume hnotp, or.inl hnotp)
+
+
+
+
+example : ¬(p → q) → p ∧ ¬q :=
+assume h,
+    or.elim (em q )
+      (assume hq,
+        have hpq : p → q, from λ _:p, hq,
+        absurd hpq h)
+      (assume hnotq,
+        or.elim (em p)
+          (assume hp, ⟨hp, hnotq⟩ )
+          (assume hnotp,
+            suffices hptoq : p → q, from  (h hptoq).elim,
+            assume hpagain:p, absurd hpagain hnotp))
+            -- not happy with this suffices dark magic
+
+
+-- got bored
+example : (p → q) → (¬p ∨ q) := sorry
+example : (¬q → ¬p) → (p → q) := sorry
+
+example : p ∨ ¬p :=
+or.elim (em p)
+(assume hp, or.inl hp) (assume hnotp, or.inr hnotp)
+
+example : (((p → q) → p) → p) :=
+  assume h, or.elim (em p )
+    (assume hp, hp)
+    (assume hnotp,
+    have hpq : p → q, from (assume hp : p, absurd hp hnotp),
+    absurd (h hpq) hnotp) -- this ↑↑ i got from the internet, it is ridiculous
+
+
+-- All in all, I'm not happy with my understanding of have and suffices;
+-- suffices is even worse gotta unerstand this fucker
