@@ -235,7 +235,7 @@ by_contra h2,
 have foo3 := le_trans (succ a) b a h h2,
 have foo4 := not_succ_le_self a,
 exact foo4(foo3),
-No Results
+
 end
 -- * Level 17
 

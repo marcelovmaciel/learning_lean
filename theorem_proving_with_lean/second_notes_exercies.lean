@@ -174,8 +174,6 @@ example : ¬(p ∧ q) → ¬p ∨ ¬q :=
   (assume hnotp, or.inl hnotp)
 
 
-
-
 example : ¬(p → q) → p ∧ ¬q :=
 assume h,
     or.elim (em q )
@@ -187,7 +185,7 @@ assume h,
           (assume hp, ⟨hp, hnotq⟩ )
           (assume hnotp,
             suffices hptoq : p → q, from  (h hptoq).elim,
-            assume hpagain:p, absurd hpagain hnotp))
+              assume hpagain:p, absurd hpagain hnotp))
             -- not happy with this suffices dark magic
 
 
