@@ -2,7 +2,7 @@ import init.data.nat.basic
 import init.data.int.basic
 
 section
--- * Quantitfiers + Equality
+-- * Quant  itfiers + Equality
 -- *  Universal
 
 
@@ -250,7 +250,6 @@ by simp [mul_add, add_mul, add_assoc, add_left_comm]
 -- The introduction rule is straightforward: to prove ∃ x : α, p x, it suffices
 -- to provide a suitable term t and a proof of p t. here are some examples:
 
-
 open nat
 
 example : ∃ x : ℕ, x > 0 :=
@@ -263,6 +262,7 @@ exists.intro 0 h
 example (x y z : ℕ) (hxy : x < y) (hyz : y < z) :
   ∃ w, x < w ∧ w < z :=
 exists.intro y (and.intro hxy hyz)
+
 
 #check @exists.intro
 
@@ -411,7 +411,13 @@ show f 0 ≤ f 3, from le_trans ‹f 0 ≤ f 1›
   (le_trans ‹f 1 ≤ f 2› ‹f 2 ≤ f 3›)
 -- ** anonynomous assume
 
--- We can also assume a hypothesis without giving it a label:In contrast to the usage with have, an anonymous assume needs an extra colon. The reason is that Lean allows us to write assume h to introduce a hypothesis without specifying it, and without the colon it would be ambiguous as to whether the h here is meant as the label or the assumption. As with the anonymous have, when you use an anonymous assume to introduce an assumption, that assumption can also be invoked later in the proof by enclosing it in French quotes.
+-- We can also assume a hypothesis without giving it a label:In contrast to the
+-- usage with have, an anonymous assume needs an extra colon. The reason is that
+-- Lean allows us to write assume h to introduce a hypothesis without specifying
+-- it, and without the colon it would be ambiguous as to whether the h here is
+-- meant as the label or the assumption. As with the anonymous have, when you
+-- use an anonymous assume to introduce an assumption, that assumption can also
+-- be invoked later in the proof by enclosing it in French quotes.
 
 
 example : f 0 ≥ f 1 → f 0 = f 1 :=
